@@ -1,0 +1,8 @@
+#
+# .gitignore for DrushDb Codeception extension,
+#
+
+# Composer directories.
+vendor/*
+composer.lock
+composer.phar
