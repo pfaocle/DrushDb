@@ -1,0 +1,24 @@
+{
+  "name":"codeception/drush-db",
+  "description":"Drush database Extension for Codeception",
+  "keywords":["database", "acceptance testing", "functional testing", "unit testing", "tdd"],
+  "homepage":"http://codeception.com/",
+
+  "type":"library",
+  "license":"MIT",
+  "authors":[
+    {
+      "name":"Paul Byrne",
+      "email":"code@pfaocle.co.uk",
+      "homepage":"http://pfaocle.co.uk"
+    }
+  ],
+  "require-dev": {
+    "codeception/codeception": "@dev"
+  },
+  "autoload":{
+    "psr-0":{
+      "Codeception":"src"
+    }
+  }
+}
