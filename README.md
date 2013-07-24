@@ -1,7 +1,8 @@
-
 # DrushDb
 
 DrushDb is a [Codeception][1] extension to populate and cleanup test Drupal sites using Drush aliases.
+
+**Note this is very much a work-in-progress proof-of-concept and other disclaimery type things.**
 
 ## Configuration
 
