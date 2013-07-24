@@ -130,11 +130,15 @@ class DrushDb extends \Codeception\Platform\Extension {
       case 'populate':
       case 'cleanup':
         if (isset($this->config[$mode]) && $this->config[$mode]) {
-          // @todo Nicer messaging variable replacement.
-          $msg = str_replace('%event', $event_name, "%event: will %mode target database (@%destination) with data from source (@%source)");
-          $msg = str_replace('%mode', $mode, $msg);
-          $msg = str_replace('%destination', $this->destinationDbAlias, $msg);
-          $msg = str_replace('%source', $this->sourceDbAlias, $msg);
+          $msg = $this->createMessage(
+            "%event: will %mode target database (@%destination) with data from source (@%source)",
+            array(
+              '%event' => $event_name,
+              '%mode', $mode,
+              '%destination', $this->destinationDbAlias,
+              '%source', $this->sourceDbAlias,
+            )
+          );
           $this->writeln($msg);
           $this->doSync();
         }
@@ -186,5 +190,21 @@ class DrushDb extends \Codeception\Platform\Extension {
     if (count($output) == 0) {
       throw new ConfigurationException("Drush error: a Drupal installation directory could not be found for @$alias");
     }
+  }
+
+  /**
+   * Simple helper to create messages with variable replacements.
+   *
+   * @param $message
+   * @param $replacements
+   * @return mixed
+   */
+  private function createMessage($message, $replacements) {
+    if (is_array($replacements)) {
+      foreach ($replacements as $key => $value) {
+        $message = str_replace($key, $value, $message);
+      }
+    }
+    return $message;
   }
 }
