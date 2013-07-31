@@ -23,7 +23,7 @@ define('DRUSH_DB_CMD_STATUS', 'drush @%alias st');
 /**
  * The command to run drush sql-sync.
  */
-define('DRUSH_DB_CMD_SQLSYNC', 'drush -y sql-sync @%source @%destination');
+define('DRUSH_DB_CMD_SQLSYNC', 'drush -y %config sql-sync @%source @%destination');
 
 
 /**
@@ -167,6 +167,15 @@ class DrushDb extends \Codeception\Platform\Extension {
   private function drushCommand() {
     $cmd = str_replace('%source', $this->sourceDbAlias, DRUSH_DB_CMD_SQLSYNC);
     $cmd = str_replace('%destination', $this->destinationDbAlias, $cmd);
+
+    // Optional configuration.
+    if (isset($this->config['structure-tables-key'])) {
+      $path = __DIR__ . '/../../../drushdb.drushrc.php';
+      $cmd = str_replace('%config', "-c $path", $cmd);
+    }
+    else {
+      $cmd = str_replace('%config', '', $cmd);
+    }
     return $cmd;
   }
 
