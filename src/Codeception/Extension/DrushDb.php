@@ -82,9 +82,6 @@ class DrushDb extends \Codeception\Platform\Extension {
       $this->sourceDbAlias = $this->config['source'];
       $this->destinationDbAlias = $this->config['destination'];
 
-      if (isset($this->config['verbose']) && $this->config['verbose']) {
-        $this->verbose = TRUE;
-      }
     }
     else {
       throw new ConfigurationException('Drush aliases for source and destination are not configured.');
@@ -154,7 +151,7 @@ class DrushDb extends \Codeception\Platform\Extension {
     exec($this->drushCommand(), $output);
 
     // If in verbose mode, clean the Drush output and re-send.
-    if ($this->verbose) {
+    if ($this->config['verbose']) {
       foreach (array_filter($output, 'strlen') as $msg) {
         $this->writeln('Drush: ' . $msg);
       }
