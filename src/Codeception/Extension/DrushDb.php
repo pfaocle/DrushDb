@@ -159,7 +159,9 @@ class DrushDb extends \Codeception\Platform\Extension {
   }
 
   /**
-   * Construct the Drush command(s), eg: drush sql-sync @source @destination
+   * Construct the Drush command(s) based on the string:
+   *
+   *  - drush -y sql-sync @%source @%destination
    *
    * @return string
    */
