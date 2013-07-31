@@ -134,9 +134,9 @@ class DrushDb extends \Codeception\Platform\Extension {
             "%event: will %mode target database (@%destination) with data from source (@%source)",
             array(
               '%event' => $event_name,
-              '%mode', $mode,
-              '%destination', $this->destinationDbAlias,
-              '%source', $this->sourceDbAlias,
+              '%mode' => $mode,
+              '%destination' => $this->destinationDbAlias,
+              '%source' => $this->sourceDbAlias,
             )
           );
           $this->writeln($msg);
