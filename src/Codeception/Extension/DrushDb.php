@@ -81,7 +81,6 @@ class DrushDb extends \Codeception\Platform\Extension {
       // If no exception is thrown, we can set the member variables.
       $this->sourceDbAlias = $this->config['source'];
       $this->destinationDbAlias = $this->config['destination'];
-
     }
     else {
       throw new ConfigurationException('Drush aliases for source and destination are not configured.');
@@ -165,18 +164,19 @@ class DrushDb extends \Codeception\Platform\Extension {
    * @return string
    */
   private function drushCommand() {
-    $cmd = str_replace('%source', $this->sourceDbAlias, DRUSH_DB_CMD_SQLSYNC);
-    $cmd = str_replace('%destination', $this->destinationDbAlias, $cmd);
+    $replacements = array(
+      '%source' => $this->sourceDbAlias,
+      '%destination' => $this->destinationDbAlias,
+    );
 
     // Optional configuration.
+    $replacements['%config'] = '';
     if (isset($this->config['structure-tables-key'])) {
       $path = __DIR__ . '/../../../drushdb.drushrc.php';
-      $cmd = str_replace('%config', "-c $path", $cmd);
+      $replacements['%config'] = "-c $path";
     }
-    else {
-      $cmd = str_replace('%config', '', $cmd);
-    }
-    return $cmd;
+
+    return strtr(DRUSH_DB_CMD_SQLSYNC, $replacements);
   }
 
   /**
