@@ -4,6 +4,23 @@ DrushDb is a [Codeception][1] extension to populate and cleanup test Drupal site
 
 **Note this is very much a work-in-progress proof-of-concept and other disclaimery type things.**
 
+
+## Installation
+
+### Manual
+
+1. `cd /path/to/test/suite`
+2. `mkdir extensions`
+3. `git clone https://github.com/pfaocle/DrushDb.git extensions/DrushDb`
+4. Edit your **tests/_bootstrap.php** file and add the line:
+
+`include __DIR__ . '/../extensions/DrushDb/src/Codeception/Extension/DrushDb.php';`
+
+### Installation with Codeception source and Composer
+
+Coming soon...?
+
+
 ## Configuration
 
 In your **codeception.yml** file:
