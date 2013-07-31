@@ -171,7 +171,7 @@ class DrushDb extends \Codeception\Platform\Extension {
 
     // Optional configuration.
     $replacements['%config'] = '';
-    if (isset($this->config['structure-tables-key'])) {
+    if (isset($this->config['drushrc']) && $this->config['drushrc']) {
       $path = __DIR__ . '/../../../drushdb.drushrc.php';
       $replacements['%config'] = "-c $path";
     }

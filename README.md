@@ -33,6 +33,7 @@ In your **codeception.yml** file:
                 destination: mysite.local
                 cleanup: true
                 populate: false
+                drushrc: true
                 verbose: false
 
 Configured entries for `source` and `destination` are required if this extension is enabled. These should be working [Drush aliases][2], _without_ a leading @ character, pointing to two Drupal sites:
@@ -40,7 +41,12 @@ Configured entries for `source` and `destination` are required if this extension
 * `source`: the Drupal site from which to grab the database
 * `destination`: the Drupal site to which the database will be copied. This is usually the site being tested. **Warning:** currently the destination database is not backed up, simply overwritten.
 
-Other configuration is optional: if any of `cleanup`, `populate` or `verbose` are omitted they are assumed to be `false`.
+Other configuration is optional: if any of `cleanup`, `populate`, `drushrc` or `verbose` are omitted they are assumed to be `false`.
+
+* `cleanup` - Re-populate the destination database at the end of each test.
+* `populate` - Populate the destination database when the suite run starts.
+* `drushrc` - Use the included **drushdb.drushrc.php** file.
+* `verbose` - Be verbose if true.
 
 [1]: http://codeception.com/
 [2]: http://drush.ws/examples/example.aliases.drushrc.php
