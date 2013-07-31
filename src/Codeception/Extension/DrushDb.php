@@ -117,13 +117,9 @@ class DrushDb extends \Codeception\Platform\Extension {
    * @throws \Codeception\Exception\Extension
    */
   protected function act($mode) {
-    // @todo Get $event type somehow, for messaging.
-    switch ($mode) {
-      case 'populate':
-        $event_name = 'Suite before';
-        break;
-      case 'cleanup':
-        $event_name = 'Test end';
+    // Get the internal Codeception event fired, for messaging.
+    if ($event_name = array_search($mode, static::$events)) {
+      $event_name = ucfirst(str_replace('.', ' ', $event_name));
     }
 
     switch ($mode) {
