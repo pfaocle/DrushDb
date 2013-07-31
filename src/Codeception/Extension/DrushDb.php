@@ -123,7 +123,7 @@ class DrushDb extends \Codeception\Platform\Extension {
       case 'populate':
       case 'cleanup':
         if (isset($this->config[$mode]) && $this->config[$mode]) {
-          $msg = $this->createMessage(
+          $this->createMessage(
             "%event: will %mode target database (@%destination) with data from source (@%source)",
             array(
               '%event' => $event_name,
@@ -132,7 +132,6 @@ class DrushDb extends \Codeception\Platform\Extension {
               '%source' => $this->sourceDbAlias,
             )
           );
-          $this->writeln($msg);
           $this->doSync();
         }
         break;
@@ -196,10 +195,8 @@ class DrushDb extends \Codeception\Platform\Extension {
    */
   private function createMessage($message, $replacements) {
     if (is_array($replacements)) {
-      foreach ($replacements as $key => $value) {
-        $message = str_replace($key, $value, $message);
-      }
+      $message = strtr($message, $replacements);
     }
-    return $message;
+    $this->writeln($message);
   }
 }
