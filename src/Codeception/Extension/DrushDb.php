@@ -62,13 +62,6 @@ class DrushDb extends \Codeception\Platform\Extension {
   private $useDrushRC = FALSE;
 
   /**
-   * Whether to output more, or more verbose, messages.
-   *
-   * @var bool
-   */
-  private $verbose = FALSE;
-
-  /**
    * Internal Codeception events to listen to.
    *
    * @var array
