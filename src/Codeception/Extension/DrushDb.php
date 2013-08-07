@@ -76,6 +76,7 @@ class DrushDb extends \Codeception\Platform\Extension {
    *
    * @param $config
    * @param $options
+   * @throws \Codeception\Exception\Configuration
    */
   public function __construct($config, $options) {
     parent::__construct($config, $options);
