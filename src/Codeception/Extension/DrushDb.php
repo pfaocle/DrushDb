@@ -4,6 +4,8 @@ namespace Codeception\Extension;
 use Codeception\Exception\Configuration as ConfigurationException;
 use Codeception\Exception\Extension as ExtensionException;
 
+require_once 'DrushCommand.php';
+
 /**
  * @file
  * Drush alias database population and cleaning.
@@ -16,14 +18,19 @@ use Codeception\Exception\Extension as ExtensionException;
  */
 
 /**
+ * Base definition of command to run drush.
+ */
+define('DRUSH_DB_CMD', 'drush %config');
+
+/**
  * The command to run drush status.
  */
-define('DRUSH_DB_CMD_STATUS', 'drush @%alias st');
+define('DRUSH_DB_CMD_STATUS', '@%alias st');
 
 /**
  * The command to run drush sql-sync.
  */
-define('DRUSH_DB_CMD_SQLSYNC', 'drush -y %config sql-sync @%source @%destination');
+define('DRUSH_DB_CMD_SQLSYNC', '-y sql-sync @%source @%destination');
 
 
 /**
@@ -46,6 +53,13 @@ class DrushDb extends \Codeception\Platform\Extension {
    * @var
    */
   protected $destinationDbAlias;
+
+  /**
+   * Whether to use the included drushdb.drushrc.php file or not.
+   *
+   * @var bool
+   */
+  private $useDrushRC = FALSE;
 
   /**
    * Whether to output more, or more verbose, messages.
@@ -81,6 +95,11 @@ class DrushDb extends \Codeception\Platform\Extension {
       // If no exception is thrown, we can set the member variables.
       $this->sourceDbAlias = $this->config['source'];
       $this->destinationDbAlias = $this->config['destination'];
+
+      // Store the option to use accompanying drushdb.drushrc.php file or not.
+      if (isset($this->config['drushrc']) && $this->config['drushrc']) {
+        $this->useDrushRC = TRUE;
+      }
     }
     else {
       throw new ConfigurationException('Drush aliases for source and destination are not configured.');
@@ -131,7 +150,7 @@ class DrushDb extends \Codeception\Platform\Extension {
               '%source' => $this->sourceDbAlias,
             )
           );
-          $this->doSync();
+          $this->drushSqlSync();
         }
         break;
       default:
@@ -140,43 +159,15 @@ class DrushDb extends \Codeception\Platform\Extension {
   }
 
   /**
-   * Actually perform the sql-sync.
+   * Construct the Drush sql-sync command and then actually perform the sync.
    */
-  private function doSync() {
-    $this->writeln('Executing: ' . $this->drushCommand());
-
-    $output = array();
-    exec($this->drushCommand(), $output);
-
-    // If in verbose mode, clean the Drush output and re-send.
-    if ($this->config['verbose']) {
-      foreach (array_filter($output, 'strlen') as $msg) {
-        $this->writeln('Drush: ' . $msg);
-      }
-    }
-  }
-
-  /**
-   * Construct the Drush command(s) based on the string:
-   *
-   *  - drush -y sql-sync @%source @%destination
-   *
-   * @return string
-   */
-  private function drushCommand() {
-    $replacements = array(
+  private function drushSqlSync() {
+    $cmd = new \DrushCommand($this->useDrushRC, $this->config['verbose']);
+    $cmd->addCommand(DRUSH_DB_CMD_SQLSYNC, array(
       '%source' => $this->sourceDbAlias,
       '%destination' => $this->destinationDbAlias,
-    );
-
-    // Optional configuration.
-    $replacements['%config'] = '';
-    if (isset($this->config['drushrc']) && $this->config['drushrc']) {
-      $path = __DIR__ . '/../../../drushdb.drushrc.php';
-      $replacements['%config'] = "-c $path";
-    }
-
-    return strtr(DRUSH_DB_CMD_SQLSYNC, $replacements);
+    ));
+    $cmd->execute($this);
   }
 
   /**
@@ -188,8 +179,11 @@ class DrushDb extends \Codeception\Platform\Extension {
   private function drushStatus($alias) {
     $output = array();
 
-    $cmd = str_replace('%alias', $alias, DRUSH_DB_CMD_STATUS);
-    exec($cmd, $output);
+    $cmd = new \DrushCommand($this->useDrushRC, $this->config['verbose']);
+    $cmd->addCommand(DRUSH_DB_CMD_STATUS, array('%alias' => $alias));
+    $cmd->execute($this, $output);
+
+    // Handle the case where $output is empty - there may be a problem with the alias.
     if (count($output) == 0) {
       throw new ConfigurationException("Drush error: a Drupal installation directory could not be found for @$alias");
     }
@@ -208,4 +202,8 @@ class DrushDb extends \Codeception\Platform\Extension {
     }
     $this->writeln($message);
   }
+
+  // Allow writeln to be accessed as a public function.
+  // @todo Check this.
+  public function writeln($message) { parent::writeln($message); }
 }
