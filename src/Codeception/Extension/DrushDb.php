@@ -158,10 +158,9 @@ class DrushDb extends \Codeception\Platform\Extension {
   private function drushSqlSync() {
     $cmd = new \DrushCommand($this->useDrushRC, $this->config['verbose']);
     $cmd->addCommand(DRUSH_DB_CMD_SQLSYNC, array(
-      '%source' => $this->sourceDbAlias,
-      '%destination' => $this->destinationDbAlias,
-    ));
-    $cmd->execute($this);
+            '%source' => $this->sourceDbAlias,
+            '%destination' => $this->destinationDbAlias))
+        ->execute($this);
   }
 
   /**
@@ -174,8 +173,8 @@ class DrushDb extends \Codeception\Platform\Extension {
     $output = array();
 
     $cmd = new \DrushCommand($this->useDrushRC, $this->config['verbose']);
-    $cmd->addCommand(DRUSH_DB_CMD_STATUS, array('%alias' => $alias));
-    $cmd->execute($this, $output);
+    $cmd->addCommand(DRUSH_DB_CMD_STATUS, array('%alias' => $alias))
+        ->execute($this, $output);
 
     // Handle the case where $output is empty - there may be a problem with the alias.
     if (count($output) == 0) {

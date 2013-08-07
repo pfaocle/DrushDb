@@ -71,6 +71,7 @@ class DrushCommand {
    */
   public function addCommand($commandString, $replacements = array()) {
     $this->drushCommand = strtr($commandString, $replacements);
+    return $this;
   }
 
   /**
