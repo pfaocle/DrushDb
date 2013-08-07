@@ -32,6 +32,11 @@ define('DRUSH_DB_CMD_STATUS', '@%alias st');
  */
 define('DRUSH_DB_CMD_SQLSYNC', '-y sql-sync @%source @%destination');
 
+/**
+ *
+ */
+define('DRUSH_DB_CMD_CCALL', '@%alias cc all');
+
 
 /**
  * Class DrushDb
@@ -161,6 +166,9 @@ class DrushDb extends \Codeception\Platform\Extension {
             '%source' => $this->sourceDbAlias,
             '%destination' => $this->destinationDbAlias))
         ->execute($this);
+
+    // Clear destination caches.
+    $cmd->addCommand(DRUSH_DB_CMD_CCALL, array('%alias' => $this->destinationDbAlias))->execute($this);
   }
 
   /**
