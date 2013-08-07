@@ -45,8 +45,9 @@ Other configuration is optional: if any of `cleanup`, `populate`, `drushrc` or `
 
 * `cleanup` - Re-populate the destination database at the end of each test.
 * `populate` - Populate the destination database when the suite run starts.
-* `drushrc` - Use the included **drushdb.drushrc.php** file.
+* `drushrc` - Use the included **drushdb.drushrc.php** file. Note that this is merged with the configuration from any other **drushrc.php** file active on the system. [Read more about drushrc.php][3] files and their order of precedence.
 * `verbose` - Be verbose if true.
 
 [1]: http://codeception.com/
 [2]: http://drush.ws/examples/example.aliases.drushrc.php
+[3]: http://drush.ws/examples/example.drushrc.php
