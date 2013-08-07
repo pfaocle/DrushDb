@@ -168,7 +168,8 @@ class DrushDb extends \Codeception\Platform\Extension {
         ->execute($this);
 
     // Clear destination caches.
-    $cmd->addCommand(DRUSH_DB_CMD_CCALL, array('%alias' => $this->destinationDbAlias))->execute($this);
+    $cmd->addCommand(DRUSH_DB_CMD_CCALL, array('%alias' => $this->destinationDbAlias))
+        ->execute($this);
   }
 
   /**
