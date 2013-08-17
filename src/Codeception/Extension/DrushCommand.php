@@ -46,7 +46,7 @@ class DrushCommand {
   public function __construct($useDrushRC = FALSE, $verbose = FALSE) {
     $replacements = array('%config' => '');
     if ($useDrushRC) {
-      $path = __DIR__ . '/../../../drushdb.drushrc.php';
+      $path = str_replace('src/Codeception/Extension', '', __DIR__) . 'drushdb.drushrc.php';
       $replacements['%config'] = "-c $path";
     }
     $this->command = strtr(DRUSH_DB_CMD, $replacements);
