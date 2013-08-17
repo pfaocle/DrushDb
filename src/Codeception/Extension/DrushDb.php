@@ -87,6 +87,11 @@ class DrushDb extends \Codeception\Platform\Extension {
     parent::__construct($config, $options);
 
     if (isset($this->config['source']) && isset($this->config['destination'])) {
+      // Store the option to use accompanying drushdb.drushrc.php file or not.
+      if (isset($this->config['drushrc']) && $this->config['drushrc']) {
+        $this->useDrushRC = TRUE;
+      }
+
       // Test aliases with drush st.
       $this->drushStatus($this->config['source']);
       $this->drushStatus($this->config['destination']);
@@ -95,10 +100,6 @@ class DrushDb extends \Codeception\Platform\Extension {
       $this->sourceDbAlias = $this->config['source'];
       $this->destinationDbAlias = $this->config['destination'];
 
-      // Store the option to use accompanying drushdb.drushrc.php file or not.
-      if (isset($this->config['drushrc']) && $this->config['drushrc']) {
-        $this->useDrushRC = TRUE;
-      }
     }
     else {
       throw new ConfigurationException('Drush aliases for source and destination are not configured.');
