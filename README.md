@@ -1,8 +1,14 @@
 # DrushDb
 
-DrushDb is a [Codeception][1] extension to populate and cleanup test Drupal sites using Drush aliases.
+DrushDb is a [Codeception][1] extension to populate and cleanup test Drupal sites during test runs using Drush aliases and the sql-sync command.
 
 **Note this is very much a work-in-progress proof-of-concept and other disclaimery type things.**
+
+
+## Requirements
+
+* Codeception 1.6.4 or greater
+* PHP 5.3
 
 
 ## Installation
