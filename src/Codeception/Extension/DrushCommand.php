@@ -49,7 +49,7 @@ class DrushCommand {
       $path = str_replace('src/Codeception/Extension', '', __DIR__) . 'drushdb.drushrc.php';
       $replacements['%config'] = "-c $path";
     }
-    $this->command = strtr(DRUSH_DB_CMD, $replacements);
+    $this->command = trim(strtr(DRUSH_DB_CMD, $replacements));
 
     $this->verbose = $verbose;
   }
