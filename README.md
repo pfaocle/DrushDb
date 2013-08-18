@@ -39,6 +39,7 @@ In your **codeception.yml** file:
                 destination: mysite.local
                 cleanup: true
                 populate: false
+                clear_cache: all
                 drushrc: true
                 verbose: false
 
@@ -46,6 +47,8 @@ Configured entries for `source` and `destination` are required if this extension
 
 * `source`: the Drupal site from which to grab the database
 * `destination`: the Drupal site to which the database will be copied. This is usually the site being tested. **Warning:** currently the destination database is not backed up, simply overwritten.
+
+Some sites will require a cache clear after the database has been overwritten. The `clear_cache` option should be set to either `none` (for no cache clears at all) or a valid Drupal cache name as returned by `drush cc`, eg `all`, `menu` or `block`.  The common settings for this are `none` or `all`.
 
 Other configuration is optional: if any of `cleanup`, `populate`, `drushrc` or `verbose` are omitted they are assumed to be `false`.
 

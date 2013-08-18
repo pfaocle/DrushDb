@@ -27,9 +27,9 @@ define('DRUSH_DB_CMD_STATUS', '@%alias st');
 define('DRUSH_DB_CMD_SQLSYNC', '-y sql-sync @%source @%destination');
 
 /**
- *
+ * The command to run drush cc,
  */
-define('DRUSH_DB_CMD_CCALL', '@%alias cc all');
+define('DRUSH_DB_CMD_CC', '@%alias cc');
 
 
 /**
@@ -94,6 +94,24 @@ class DrushDb extends \Codeception\Platform\Extension {
       $this->sourceDbAlias = $this->config['source'];
       $this->destinationDbAlias = $this->config['destination'];
 
+      // Check the named cache configured to clear is valid and set member variable.
+      // @todo Ensure -s works as intended.
+      if (isset($this->config['clear_cache']) && 'none' != $this->config['clear_cache']) {
+        $output = array();
+        $output_errors = array();
+
+        // Run a simulated cache clear on the configured cache to validate cache name.
+        $cmd = new \DrushCommand($this->useDrushRC, $this->config['verbose']);
+        $cmd->addCommand('-s ' . DRUSH_DB_CMD_CC . ' ' . $this->config['clear_cache'], array('%alias' => $this->destinationDbAlias))
+            ->execute($this, $output, $output_errors);
+
+        // Parse the STDERR output a little and throw an Exception if the cache type is invalid.
+        foreach (array_filter($output_errors, function($haystack) { return strpos($haystack, '[error]'); }) as $error) {
+          // Strip out Drush coloured status.
+          list($error, ) = explode("\033", $error);
+          throw new ConfigurationException(trim($error));
+        }
+      }
     }
     else {
       throw new ConfigurationException('Drush aliases for source and destination are not configured.');
@@ -162,9 +180,11 @@ class DrushDb extends \Codeception\Platform\Extension {
             '%destination' => $this->destinationDbAlias))
         ->execute($this);
 
-    // Clear destination caches.
-    $cmd->addCommand(DRUSH_DB_CMD_CCALL, array('%alias' => $this->destinationDbAlias))
-        ->execute($this);
+    // Clear destination cache, if configured.
+    if ('none' != $this->config['clear_cache']) {
+      $cmd->addCommand(DRUSH_DB_CMD_CC . ' ' . $this->config['clear_cache'], array('%alias' => $this->destinationDbAlias))
+          ->execute($this);
+    }
   }
 
   /**

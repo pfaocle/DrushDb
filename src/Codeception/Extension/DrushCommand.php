@@ -98,9 +98,10 @@ class DrushCommand {
    *
    * @param \Codeception\Platform\Extension $extension
    * @param array $output
+   * @param array $output_errors
    * @throws Codeception\Exception\Extension
    */
-  public function execute(Codeception\Platform\Extension $extension, &$output = array()) {
+  public function execute(Codeception\Platform\Extension $extension, &$output = array(), &$output_errors = array()) {
     $command = $this->command . ' ' . $this->drushCommand;
     if ($this->validate()) {
       if ($this->verbose) {
@@ -124,6 +125,7 @@ class DrushCommand {
         while (!feof($pipes[2])) {
           if ($stderr_line = stream_get_line($pipes[2], DRUSHDB_DRUSH_OUTPUT_LINE_LENGTH_MAX, "\n")) {
             $extension->writeln('Drush: ' . $stderr_line);
+            $output_errors[] = $stderr_line;
           }
         }
 
