@@ -9,12 +9,6 @@ require_once 'DrushCommand.php';
 /**
  * @file
  * Drush alias database population and cleaning.
- *
- * Note: this class requires the use of exec() - PHP safe mode should be off
- * or preferably,the drush script placed in a directory in PHP's safe_mode_exec_dir
- *
- * @see http://php.net/manual/en/function.exec.php
- *
  */
 
 /**

@@ -6,10 +6,20 @@ use Codeception\Exception\Extension as ExtensionException;
  * @file
  * DrushDB - Drush commands wrapper.
  *
- * A wrapper class allowing Drush commands to be run via exec() from the DrushDb
- * Codeception extension.
+ * A wrapper class around Drush commands allowing them to be run via proc_open()
+ * from the DrushDb Codeception extension.
+ *
+ * Note: this class requires the use of proc_open().
+ *
+ * @see http://php.net/manual/en/function.proc-open.php
  *
  */
+
+/**
+ * The maximum length of a line returned in Drush output (stdout or stderr).
+ */
+define('DRUSHDB_DRUSH_OUTPUT_LINE_LENGTH_MAX', 4096);
+
 
 /**
  * Class DrushCommand
@@ -87,7 +97,8 @@ class DrushCommand {
    * Execute the command.
    *
    * @param \Codeception\Platform\Extension $extension
-   * @param $output
+   * @param array $output
+   * @throws Codeception\Exception\Extension
    */
   public function execute(Codeception\Platform\Extension $extension, &$output = array()) {
     $command = $this->command . ' ' . $this->drushCommand;
@@ -95,11 +106,41 @@ class DrushCommand {
       if ($this->verbose) {
         $extension->writeln('Executing: ' . $command);
       }
-      exec($command, $output);
-      if ($this->verbose) {
-        foreach (array_filter($output, 'strlen') as $msg) {
-          $extension->writeln('Drush: ' . $msg);
+
+      // Descriptors and pipes.
+      $descriptors = array(
+        0 => array('pipe', 'r'),  // STDIN
+        1 => array('pipe', 'w'),  // STDOUT
+        2 => array('pipe', 'w'),  // STDERR
+      );
+      $pipes = array();
+
+      // Execute the command using proc_open() and create the output array, as exec() would.
+      $process = proc_open($command, $descriptors, $pipes, dirname(__FILE__));
+      if (is_resource($process)) {
+        // Drush outputs its verbose messages to STDERR - we simply re-output this
+        // without checking $this->verbose, assuming that if $options['verbose'] is
+        // set to 1 in drushrc.php, the end user wants this output.
+        while (!feof($pipes[2])) {
+          if ($stderr_line = stream_get_line($pipes[2], DRUSHDB_DRUSH_OUTPUT_LINE_LENGTH_MAX, "\n")) {
+            $extension->writeln('Drush: ' . $stderr_line);
+          }
         }
+
+        // Store output on STDOUT to $output array and immediately output each line
+        // if in verbose mode.
+        while (!feof($pipes[1])) {
+          if ($msg = stream_get_line($pipes[1], DRUSHDB_DRUSH_OUTPUT_LINE_LENGTH_MAX, "\n")) {
+            if ($this->verbose) {
+              $extension->writeln('Drush: ' . $msg);
+            }
+            $output[] = $msg;
+          }
+        }
+        proc_close($process);
+      }
+      else {
+        throw new ExtensionException(__CLASS__, "Could not open a process to run $command");
       }
     }
     else {
