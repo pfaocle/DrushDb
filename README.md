@@ -5,9 +5,9 @@ DrushDb is a [Codeception][1] extension to populate and cleanup test Drupal site
 **Note this is very much a work-in-progress proof-of-concept and other disclaimery type things.**
 
 
-## Requirements
+## Minimum requirements
 
-* Codeception 1.6.4 or greater
+* Codeception 1.6.4
 * PHP 5.3
 
 
