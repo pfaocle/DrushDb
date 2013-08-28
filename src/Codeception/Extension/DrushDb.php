@@ -100,7 +100,6 @@ class DrushDb extends \Codeception\Platform\Extension {
       $this->destinationDbAlias = $this->config['destination'];
 
       // Check the named cache configured to clear is valid and set member variable.
-      // @todo Ensure -s works as intended.
       if (isset($this->config['clear_cache']) && 'none' != $this->config['clear_cache']) {
         $output = array();
         $output_errors = array();
