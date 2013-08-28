@@ -31,6 +31,11 @@ define('DRUSH_DB_CMD_SQLSYNC', '-y sql-sync @%source @%destination');
  */
 define('DRUSH_DB_CMD_CC', '@%alias cc');
 
+/**
+ * Character that separates the message from the coloured status in error output from Drush.
+ */
+define('DRUSH_DB_DRUSH_ERROR_SEPARATOR', "\033");
+
 
 /**
  * Class DrushDb
@@ -108,7 +113,7 @@ class DrushDb extends \Codeception\Platform\Extension {
         // Parse the STDERR output a little and throw an Exception if the cache type is invalid.
         foreach (array_filter($output_errors, function($haystack) { return strpos($haystack, '[error]'); }) as $error) {
           // Strip out Drush coloured status.
-          list($error, ) = explode("\033", $error);
+          list($error, ) = explode(DRUSH_DB_DRUSH_ERROR_SEPARATOR, $error);
           throw new ConfigurationException(trim($error));
         }
       }
