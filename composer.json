@@ -21,4 +21,7 @@
       "Codeception":"src"
     }
   }
+  "config": {
+    "bin-dir": "bin"
+  }
 }
