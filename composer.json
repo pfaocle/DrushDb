@@ -20,7 +20,7 @@
     "psr-0":{
       "Codeception":"src"
     }
-  }
+  },
   "config": {
     "bin-dir": "bin"
   }
