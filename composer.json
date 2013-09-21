@@ -13,9 +13,16 @@
       "homepage":"http://pfaocle.co.uk"
     }
   ],
-  "require-dev": {
-    "codeception/codeception": "@dev"
+
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=5.4.0",
+    "codeception/codeception": "1.6.x"
   },
+  "require-dev": {
+    "php": ">=5.4.0",
+    "codeception/codeception": "@dev"
+  }
   "autoload":{
     "psr-0":{
       "Codeception":"src"
